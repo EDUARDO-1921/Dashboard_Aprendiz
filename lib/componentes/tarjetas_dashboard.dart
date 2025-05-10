@@ -1,30 +1,50 @@
 import 'package:flutter/material.dart';
 
+/// Modelo de datos para cada tarjeta
+class CardDataModel {
+  final String title;
+  final String value;
+  final IconData icon;
+  const CardDataModel({
+    required this.title,
+    required this.value,
+    required this.icon,
+  });
+}
+
 class TarjetasDashboard extends StatelessWidget {
-  const TarjetasDashboard({super.key});
+  final List<CardDataModel> items;
+  const TarjetasDashboard({
+    super.key,
+    required this.items, // inyección de datos dinámica para las tarjetas
+  });
 
   @override
   Widget build(BuildContext context) {
+    // Organiza las tarjetas en filas y columnas, saltando a la siguiente línea cuando no caben, con 16 px de espacio horizontal y vertical
     return Wrap(
       spacing: 16,
       runSpacing: 16,
-      children: const [
-        CardItem(title: "Puntos totales", value: "1,200", icon: Icons.star),
-        CardItem(title: "Desafíos completados", value: "45", icon: Icons.fitness_center),
-        CardItem(title: "Promedio diario", value: "3", icon: Icons.bar_chart),
-        CardItem(title: "Nivel actual", value: "Avanzado", icon: Icons.trending_up),
-      ],
+      children: items
+          .map((item) => CardItem(
+                title: item.title,
+                value: item.value,
+                icon: item.icon,
+              ))
+          .toList(), // construcción dinámica de CardItem
     );
   }
 }
 
+/// Widget que representa una tarjeta de estadística con un icono, un valor y un título
 class CardItem extends StatelessWidget {
   final String title;
   final String value;
   final IconData icon;
-
+  // Constructor que inicializa la tarjeta con título, valor e ícono
   const CardItem({super.key, required this.title, required this.value, required this.icon});
-
+  
+  // Muestra la tarjeta con icono, valor y título centrados
   @override
   Widget build(BuildContext context) {
     return SizedBox(

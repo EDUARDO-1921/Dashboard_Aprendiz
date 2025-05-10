@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
+/// Modelo simple para cada sección del pastel
+class PieSectionDataModel {
+  final double value;
+  final Color color;
+  final String label;
+  final Color textColor;
+
+  const PieSectionDataModel({
+    required this.value,
+    required this.color,
+    required this.label,
+    required this.textColor,
+  });
+}
+
+/// Widget parametrizable que muestra una gráfica de pastel
+/// Recibe una lista de modelos PieSectionDataModel con value/color/label/textColor
 class GraficaCircular extends StatelessWidget {
-  const GraficaCircular({super.key});
+  final List<PieSectionDataModel> sections;
+  const GraficaCircular({
+    super.key,
+    required this.sections, // ← aquí pasas los datos dinámicos
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +44,10 @@ class GraficaCircular extends StatelessWidget {
                 startDegreeOffset: -90,
                 sectionsSpace: 3,
                 centerSpaceRadius: 70,
-                sections: [
-                  _section(35, Colors.green, "Cardio", Colors.white),
-                  _section(35, Colors.lightGreen, "Fuerza", Colors.black),
-                  _section(30, Colors.grey.shade300, "Descanso", Colors.black),
-                ],
+                sections: List.generate(
+                  sections.length,
+                  (i) => _buildSection(sections[i]),
+                ),
               ),
             ),
           ),
@@ -36,13 +56,18 @@ class GraficaCircular extends StatelessWidget {
     );
   }
 
-  PieChartSectionData _section(double value, Color color, String label, Color textColor) {
+  /// Construye una sección de la gráfica a partir del modelo
+  PieChartSectionData _buildSection(PieSectionDataModel data) {
     return PieChartSectionData(
-      value: value,
-      color: color,
+      value: data.value,
+      color: data.color,
       radius: 70,
-      title: label,
-      titleStyle: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: textColor),
+      title: data.label,
+      titleStyle: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+        color: data.textColor,
+      ),
       titlePositionPercentageOffset: 0.65,
     );
   }
